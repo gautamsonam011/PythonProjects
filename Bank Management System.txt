@@ -1,0 +1,120 @@
+import mysql.connector as c
+con = c.connect(host= 'localhost',
+                user = 'root',
+                password= 'Gautamsonam@1234#',
+                database = 'Bank')
+
+
+def openAcc():
+    name = input("enter the name:")
+    ac = input("enter the account number:")
+    dob = input("enter D.O.B:")
+    phone = input(" enter the phone number:")
+    add = input(" enter the address:")
+    ob = int(input("enter the opening balance:"))
+    data = (name,ac,dob,phone,add,ob)
+    data1 = (name, ac, ob)
+    query = 'insert into account values(%s%s%s%s%s%s)'
+    query1 = 'insert into amount values(%s%s%s)'
+
+    cursor = con.cursor()
+    c.execute(query,data)
+    c.execute(query1,data1)
+    con.commit()
+    print("Data entered successfully!!")
+    main()
+
+
+
+def depoAmo():
+    am = int(input("Enter Amount:"))
+    ac = input("Enter Account No:")
+    a = "select balance from amount where acno = %s"
+    data2 = (ac,)
+    c = con.cursor()
+    c.execute(a,data2)
+    myresult = c.fetchone()
+    tam = myresult[0]+am
+    query2 = "update amount set balance = %s where acno = %s"
+    d = (tam,ac)
+    c.execute(query2,d)
+    con.commit()
+    main()
+
+
+def witham():
+    am = int(input("enter amount:"))
+    ac = input("enter account no:")
+    a = "select balance from amount where acno = %s"
+    data3 = (ac,)
+    c = con.cursor()
+    c.execute(a,data3)
+    myresult = c.fetchone()
+    tam = myresult-am
+    query3 = "update amount set balance =%s where acno = %s"
+    d = (tam,ac)
+    c.execute(query3,d)
+    con.commit()
+    main()
+
+
+def balance():
+    ac = input("enter account no:")
+    a = "select balance from amount where acno =%s"
+    data4 = (ac,)
+    c = con.cursor()
+    c.execute(a,data4)
+    myresult = c.fetchone()
+    print("Balance for Account: ",ac," is myresult[0]")
+    main()
+
+
+def dispacc():
+    ac = input("enter account no:")
+    a = "select*from account where acno =%s"
+    data5 = (ac,)
+    c = con.cursor()
+    myresult = c.fetchone()
+    for i in myresult:
+        print(i,end=" ")
+        main()
+
+
+def closeac():
+    ac = input("enter account no:")
+    query4 = "delete from account where acno =%s"
+    query5 = "delete from amount acno = %s"
+    data6 = (ac,)
+    c = con.cursor()
+    c.execute (query4,data6)
+    c.execute(query5,data6)
+    con.commit()
+    main()
+
+
+def main():
+    print("""
+    1. Open New Account
+    2. Deposit Amount
+    3. Withdraw Amount
+    4. Balance Enquery
+    5. Display Customer Details
+    6. Close Account
+     """)
+    choice = input("enter Task No:")
+    if (choice == '1'):
+        openAcc()
+    elif (choice == '2'):
+        depoAmo()
+    elif (choice == '3'):
+        witham()
+    elif (choice == '4'):
+        balance()
+    elif (choice == '5'):
+        dispacc()
+    elif (choice == '6'):
+        closeac()
+    else:
+        print("choice wrong----->")
+        main()
+main()
